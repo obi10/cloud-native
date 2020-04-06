@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd-k8s-deployment
+  labels:
+    app: httpd-k8s
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: httpd-k8s
+  template:
+    metadata:
+      labels:
+        app: httpd-k8s
+    spec:
+      containers:
+      - name: httpd-k8s
+        image: iad.ocir.io/idaguzmb9zyu/httpd-k8s:v1
+        ports:
+        - containerPort: 80

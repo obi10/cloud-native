@@ -59,31 +59,31 @@ Click en Create y se aprovisiona el entorno exitosamente para empezar a trabajar
 
 #### 3. Crear un nuevo repositorio Git
 Ingresar al proyecto > Project Home > + Create Repository<br/>
-*Repository Name: NodeJSDocker*
-*Description:*
+*Repository Name: NodeJSDocker*<br/>
+*Description:*<br/>
 *Initial content: Empty Repository*
 ![new_repository](https://github.com/obi10/cloud-native/blob/master/images/devcs/new_repository.png)
 Click en Create y se obtiene un nuevo repositorio en Oracle Cloud.
 
 #### 4. Crear un VM con Developer Cloud Service
 Primero se debe crear un template de VM con los siguientes tools: Docker, OCIcli (requiere Python3 3.6), Kubectl.<br/>
-Organization > Virtual Machines Templates > + Create Template
-*Name: MicroserviceTemplate*
-*Description:*
+Organization > Virtual Machines Templates > + Create Template<br/>
+*Name: MicroserviceTemplate*<br/>
+*Description:*<br/>
 *Platform: Oracle Linux 7*
 ![vm_template](https://github.com/obi10/cloud-native/blob/master/images/devcs/vm_template.png)
-Click en Configure Software<br/>
+Click en Configure Software.<br/>
 Agregar Docker 17.12 > Agregar OCIcli > Agregar Python3 3.6 > Agregar Kubectl > Done
 ![vm_template_configure_software](https://github.com/obi10/cloud-native/blob/master/images/devcs/vm_template_configure_software.png)
 
 Luego, aprovisionar una máquina virtual a partir del template creado previamente.<br/>
-Build Virtual Machines > + Create VM
-*Quantity: 1*
-*VM Template: MicroserviceTemplate*
-*Region: us-ashburn-1*
+Build Virtual Machines > + Create VM<br/>
+*Quantity: 1*<br/>
+*VM Template: MicroserviceTemplate*<br/>
+*Region: us-ashburn-1*<br/>
 *Shape: VM.Standard.E2.2*
 ![build_vm](https://github.com/obi10/cloud-native/blob/master/images/devcs/build_vm.png)
-Start the Build VM
+Start the Build VM.
 ![build_vm_start](https://github.com/obi10/cloud-native/blob/master/images/devcs/build_vm_start.png)
 
 #### 5. Subir archivos al repositorio Git
@@ -99,7 +99,7 @@ $ cd GoREST
 ![terminal_1](https://github.com/obi10/cloud-native/blob/master/images/devcs/terminal_1.png)
 En la carpeta GoREST se crean tres archivos: main.go, Dockerfile y gorest.yml.
 ![terminal_2](https://github.com/obi10/cloud-native/blob/master/images/devcs/terminal_2.png)
-Las líneas de código de los archivos son las siguientes:
+Las líneas de código de los archivos son las siguientes:<br/>
 __main.go__
 ~~~~
 package main
@@ -195,7 +195,7 @@ Docker > New External Registry
 #### 7. Crear Jobs
 Se crea un primer job __BuildGoRESTAppl__<br/>
 Builds > + Create Job<br/>
-*Name: BuildGoRESTAppl*
+*Name: BuildGoRESTAppl*<br/>
 *Template: MicroserviceTemplate*
 ![job_1](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_1.png)
 Git<br/>
@@ -205,19 +205,19 @@ Git<br/>
 Steps<br/>
 Add Step - Docker login, Docker build, Docker push<br/>
 Docker login<br/>
-*Registry Host: iad.ocir.io*
-*Username: idu2plmeyir7/junior.palomino@oracle.com*
-*Password: <Auth Token>*
+*Registry Host: iad.ocir.io*<br/>
+*Username: idu2plmeyir7/junior.palomino@oracle.com*<br/>
+*Password:*<Auth Token>
 ![job_1_docker_login](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_1_docker_login.png)
 Docker build<br/>
-*Registry Host: iad.ocir.io*
-*Image Name: idu2plmeyir7/go-rest (verificar el nombre completo de la imagen 'iad.ocir.io/idu2plmeyir7/go-rest:v1' en el archivo gorest.yml)*
-*Version Tag: v1*
+*Registry Host: iad.ocir.io*<br/>
+*Image Name: idu2plmeyir7/go-rest (verificar el nombre completo de la imagen 'iad.ocir.io/idu2plmeyir7/go-rest:v1' en el archivo gorest.yml)*<br/>
+*Version Tag: v1*<br/>
 *Source: Context Root in Workspace*
 ![job_1_docker_build](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_1_docker_build.png)
 Docker push<br/>
-*Registry Host: iad.ocir.io*
-*Image Name: idu2plmeyir7/go-rest*
+*Registry Host: iad.ocir.io*<br/>
+*Image Name: idu2plmeyir7/go-rest*<br/>
 *Version Tag: v1*
 ![job_1_docker_push](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_1_docker_push.png)
 
@@ -228,17 +228,17 @@ Builds > + Create Job<br/>
 *Name: DeployGoRESTAppl*
 *Template: MicroserviceTemplate*
 ![job_2](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_2.png)
-Git
-*Repository: GoREST.git*
+Git<br/>
+*Repository: GoREST.git*<br/>
 *Branch: Master*
 ![job_2_git](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_2_git.png)
-Steps
-Add Step - OCIcli, Unix Shell
-OCIcli
-*User OCID: ocid1.user.oc1..aaaaaaaas2ol4ddk6yzmhabecxetak6cnqejwc7whhb7r567iiqxe7nvmpza*
-*Fingerprint: b6:d5:1d:9f:3e:b8:93:fc:d1:35:09:bf:67:e5:0c:48*
-*Tenancy: ocid1.tenancy.oc1..aaaaaaaal7ryxbp2hgljainhn3xe67m3jec66exupxajvsjcd36y5sfot7kq*
-*Private Key: <value>*
+Steps<br/>
+Add Step - OCIcli, Unix Shell<br/>
+OCIcli<br/>
+*User OCID: ocid1.user.oc1..aaaaaaaas2ol4ddk6yzmhabecxetak6cnqejwc7whhb7r567iiqxe7nvmpza*<br/>
+*Fingerprint: b6:d5:1d:9f:3e:b8:93:fc:d1:35:09:bf:67:e5:0c:48*<br/>
+*Tenancy: ocid1.tenancy.oc1..aaaaaaaal7ryxbp2hgljainhn3xe67m3jec66exupxajvsjcd36y5sfot7kq*<br/>
+*Private Key:*<value><br/>
 *Region: us-ashburn-1*
 ![job_2_ocicli](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_2_ocicli.png)
 Unix Shell
@@ -272,4 +272,4 @@ Para observar como funciona el REST Service, ingresar en el browser la siguiente
 http://<ip_worker_node>:30091/<nombre>
 ![browser](https://github.com/obi10/cloud-native/blob/master/images/devcs/browser.png)
 
-
+Listo!! Usted acaba de crear satisfactoriamente un REST Service en Oracke Kubernetes Engine usando Oracle Developer Cloud Service.

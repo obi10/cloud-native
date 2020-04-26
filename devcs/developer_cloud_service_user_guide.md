@@ -172,7 +172,7 @@ spec:
       containers:
       - name: gorest-se
         image:  iad.ocir.io/idu2plmeyir7/go-rest:v1
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 8093
 ---
@@ -273,3 +273,10 @@ http://<ip_worker_node>:30091/<nombre>
 ![browser](https://github.com/obi10/cloud-native/blob/master/images/devcs/browser.png)
 
 Listo!! Usted acaba de crear satisfactoriamente un REST Service en Oracke Kubernetes Engine usando Oracle Developer Cloud Service.
+
+
+#### Posibles errores
+Failed to pull image "iad.ocir.io/idu2plmeyir7/go-rest:latest": rpc error: code = Unknown desc = pull access denied for iad.ocir.io/idu2plmeyir7/go-rest, repository does not exist or may require 'docker login'.
+link: https://github.com/kubernetes/kubernetes/issues/24903
+Tip: en el archivo .yml se recomienda tagear la imagen con una etiqueta diferente a latest.
+![error_1](https://github.com/obi10/cloud-native/blob/master/images/devcs/error_1.png)

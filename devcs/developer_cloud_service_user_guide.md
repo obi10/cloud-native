@@ -170,7 +170,7 @@ spec:
     spec:
       containers:
       - name: gorest-se
-        image:  iad.ocir.io/idu2plmeyir7/go-rest:v1
+        image:  iad.ocir.io/<object-storage-namespace>/go-rest:v1
         imagePullPolicy: Always
         ports:
         - containerPort: 8093
@@ -251,8 +251,11 @@ export KUBECONFIG=$HOME/.kube/config
 if kubectl get deployment gorest-se; then
     kubectl set image deployment/gorest-se gorest-se=iad.ocir.io/idu2plmeyir7/go-rest:$tag --record;
 else
+    if kubectl get secret ocirsecret; then
+    else
     # A Kubernetes cluster uses the Secret of docker-registry type to authenticate with a container registry to pull a private image (modificar el comando)
     kubectl create secret docker-registry <secret-name> --docker-server=<region-code>.ocir.io --docker-username='<tenancy-namespace>/<oci-username>' --docker-password='<oci-auth-token>' --docker-email='<email-address>';
+    fi
 fi
 
 kubectl apply -f gorest.yml

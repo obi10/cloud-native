@@ -198,11 +198,14 @@ Builds > + Create Job<br/>
 *Name: BuildGoRESTAppl*<br/>
 *Template: MicroserviceTemplate*
 ![job_1](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_1.png)
-Git<br/>
+--Git<br/>
 *Repository: GoREST.git*
 *Branch: Master*
 ![job_1_git](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_1_git.png)
-Steps<br/>
+--Parameters<br/>
+*Name: tag*
+![job_1_parameter](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_1_parameter.png)
+--Steps<br/>
 Add Step - __Docker login__, __Docker build__, __Docker push__<br/>
 __Docker login__<br/>
 *Registry Host: iad.ocir.io*<br/>
@@ -212,13 +215,13 @@ __Docker login__<br/>
 __Docker build__<br/>
 *Registry Host: iad.ocir.io*<br/>
 *Image Name: idu2plmeyir7/go-rest (verificar el nombre completo de la imagen 'iad.ocir.io/idu2plmeyir7/go-rest:v1' en el archivo gorest.yml)*<br/>
-*Version Tag: v1*<br/>
+*Version Tag: $tag*<br/>
 *Source: Context Root in Workspace*
 ![job_1_docker_build](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_1_docker_build.png)
 __Docker push__<br/>
 *Registry Host: iad.ocir.io*<br/>
 *Image Name: idu2plmeyir7/go-rest*<br/>
-*Version Tag: v1*
+*Version Tag: $tag*
 ![job_1_docker_push](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_1_docker_push.png)
 
 Click en Save para guardar las configuraciones del primer job.
@@ -228,11 +231,14 @@ Builds > + Create Job<br/>
 *Name: DeployGoRESTAppl*
 *Template: MicroserviceTemplate*
 ![job_2](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_2.png)
-Git<br/>
+--Git<br/>
 *Repository: GoREST.git*<br/>
 *Branch: Master*
 ![job_2_git](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_2_git.png)
-Steps<br/>
+--Parameters<br/>
+*Name: tag*
+![job_2_parameter](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_2_parameter.png)
+--Steps<br/>
 Add Step - __OCIcli__, __Unix Shell__<br/>
 __OCIcli__<br/>
 *User OCID: ocid1.user.oc1..aaaaaaaas2ol4ddk6yzmhabecxetak6cnqejwc7whhb7r567iiqxe7nvmpza*<br/>
@@ -252,13 +258,14 @@ if kubectl get deployment gorest-se; then
     kubectl set image deployment/gorest-se gorest-se=iad.ocir.io/idu2plmeyir7/go-rest:$tag --record;
 else
     if kubectl get secret ocirsecret; then
+        sleep 5
     else
-    # A Kubernetes cluster uses the Secret of docker-registry type to authenticate with a container registry to pull a private image (modificar el comando)
-    kubectl create secret docker-registry <secret-name> --docker-server=<region-code>.ocir.io --docker-username='<tenancy-namespace>/<oci-username>' --docker-password='<oci-auth-token>' --docker-email='<email-address>';
+        # A Kubernetes cluster uses the Secret of docker-registry type to authenticate with a container registry to pull a private image (modificar el comando)
+        kubectl create secret docker-registry <secret-name> --docker-server=<region-code>.ocir.io --docker-username='<tenancy-namespace>/<oci-username>' --docker-password='<oci-auth-token>' --docker-email='<email-address>';
+        kubectl apply -f gorest.yml
     fi
 fi
 
-kubectl apply -f gorest.yml
 sleep 30
 kubectl get services gorest-se
 kubectl get pods
@@ -277,6 +284,7 @@ Doble click en el link que une los jobs y seleccionar Successful. Luego click en
 Click en Save.
 
 Click en el botón de Build, como es mostrado en la figura de abajo, para correr el pipeline. El job BuildGoRESTAppl será ejecutado primero, si la ejecución resulta exitosa, luego el job DeployGoRESTAppl desplegar la aplicación REST escrita en Golang en un contenedor orquestado por Oracle Kubernetes.
+En la __PRIMERA EJECUCIÓN__ el valor de tag: __v1__.
 ![pipeline_build_button](https://github.com/obi10/cloud-native/blob/master/images/devcs/pipeline_build_button.png)
 
 Para observar como funciona el REST Service, ingresar en el browser la siguiente url:
@@ -285,6 +293,7 @@ http://<ip_worker_node>:30091/<nombre>
 
 Listo!! Usted acaba de crear satisfactoriamente un REST Service en Oracke Kubernetes Engine usando Oracle Developer Cloud Service.
 
+Luego modifique en el archivo __'main.go'__ la frase __'Hello'__ y ejecute nuevamente el pipeline, introduciendo otro valor del tag: __v2__.
 
 #### Posibles errores
 Failed to pull image "iad.ocir.io/idu2plmeyir7/go-rest:latest": rpc error: code = Unknown desc = pull access denied for iad.ocir.io/idu2plmeyir7/go-rest, repository does not exist or may require 'docker login'.<br/>

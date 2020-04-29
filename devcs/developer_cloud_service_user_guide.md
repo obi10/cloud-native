@@ -37,19 +37,19 @@ El valor de llave public.pem se añade como API key del usuario.<br/>
 ![api_key_user](https://github.com/obi10/cloud-native/blob/master/images/devcs/api_key_user.png)
 Se debe tener en cuentra que la llave creada no tiene contraseña, ya que en la configuración del ocicli (job: DeployGoRESTAppl) no es permitido ingresar el parámetro de contraseña de la llave.
 
-Los siguientes valores son requeridos al configurar el Developer Cloud Service:
-*__tenancy_ocid__: ocid1.tenancy.oc1..aaaaaaaal7ryxbp2hgljainhn3xe67m3jec66exupxajvsjcd36y5sfot7kq*
-*__user_ocid__: ocid1.user.oc1..aaaaaaaas2ol4ddk6yzmhabecxetak6cnqejwc7whhb7r567iiqxe7nvmpza*
-*__private key__: <valor>*
-*__passphrase__:*
-*__fingerprint__: b6:d5:1d:9f:3e:b8:93:fc:d1:35:09:bf:67:e5:0c:48*
-*__compartment_ocid__: ocid1.compartment.oc1..aaaaaaaa57ptyitppgnwlp4e3dosnqv3ehqyb3cmbmtkcy6rndtj6qjnpzda*
+Los siguientes valores son requeridos al configurar el Developer Cloud Service:<br/>
+*__tenancy_ocid__: ocid1.tenancy.oc1..aaaaaaaal7ryxbp2hgljainhn3xe67m3jec66exupxajvsjcd36y5sfot7kq*<br/>
+*__user_ocid__: ocid1.user.oc1..aaaaaaaas2ol4ddk6yzmhabecxetak6cnqejwc7whhb7r567iiqxe7nvmpza*<br/>
+*__private key__: <valor>*<br/>
+*__passphrase__:*<br/>
+*__fingerprint__: b6:d5:1d:9f:3e:b8:93:fc:d1:35:09:bf:67:e5:0c:48*<br/>
+*__compartment_ocid__: ocid1.compartment.oc1..aaaaaaaa57ptyitppgnwlp4e3dosnqv3ehqyb3cmbmtkcy6rndtj6qjnpzda*<br/>
 *__storage namespace__: idu2plmeyir7*
 
 #### 2. Crear un nuevo proyecto
 Se crea un nuevo proyecto:<br/>
 Organization > Projects > + Create<br/>
-*Name: ProyectoDevCS*
+*Name: __ProyectoDevCS__*
 ![new_project_1](https://github.com/obi10/cloud-native/blob/master/images/devcs/new_project_1.png)
 *Template: Empty Project*
 ![new_project_2](https://github.com/obi10/cloud-native/blob/master/images/devcs/new_project_2.png)
@@ -59,7 +59,7 @@ Click en Create y se aprovisiona el entorno exitosamente para empezar a trabajar
 
 #### 3. Crear un nuevo repositorio Git
 Ingresar al proyecto > Project Home > + Create Repository<br/>
-*Repository Name: NodeJSDocker*<br/>
+*Repository Name: __GoREST__*<br/>
 *Description:*<br/>
 *Initial content: Empty Repository*
 ![new_repository](https://github.com/obi10/cloud-native/blob/master/images/devcs/new_repository.png)
@@ -68,7 +68,7 @@ Click en Create y se obtiene un nuevo repositorio en Oracle Cloud.
 #### 4. Crear un VM con Developer Cloud Service
 Primero se debe crear un template de VM con los siguientes tools: Docker, OCIcli (requiere Python3 3.6), Kubectl.<br/>
 Organization > Virtual Machines Templates > + Create Template<br/>
-*Name: MicroserviceTemplate*<br/>
+*Name: __MicroserviceTemplate__*<br/>
 *Description:*<br/>
 *Platform: Oracle Linux 7*
 ![vm_template](https://github.com/obi10/cloud-native/blob/master/images/devcs/vm_template.png)
@@ -141,8 +141,8 @@ CMD ["/app/main"]
 
 __gorest.yml__
 ~~~~
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
   name: gorest-se
   labels:
@@ -157,17 +157,16 @@ spec:
     nodePort: 30091
     name: http
 ---
+apiVersion: apps/v1
 kind: Deployment
-apiVersion: extensions/v1beta1
 metadata:
   name: gorest-se
 spec:
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
         app: gorest-se
-        version: v1
     spec:
       containers:
       - name: gorest-se
@@ -175,7 +174,8 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8093
----
+      imagePullSecrets:
+        - name: ocirsecret
 ~~~~
 
 Para subir los archivos al repositorio Git del Developer Cloud Service:
@@ -188,7 +188,7 @@ $ git push -u origin master (password: account password)
 ![terminal_3](https://github.com/obi10/cloud-native/blob/master/images/devcs/terminal_3.png)
 
 #### 6. Conectar a Oracle Cloud Infrastructure Registry (OCIR)
-Para integrarse al servicio de OCIR:<br/>
+Para observar las imágenes del OCIR desde el DevCS:<br/>
 Docker > New External Registry
 ![ocir](https://github.com/obi10/cloud-native/blob/master/images/devcs/ocir.png)
 
@@ -203,19 +203,19 @@ Git<br/>
 *Branch: Master*
 ![job_1_git](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_1_git.png)
 Steps<br/>
-Add Step - Docker login, Docker build, Docker push<br/>
-Docker login<br/>
+Add Step - __Docker login__, __Docker build__, __Docker push__<br/>
+__Docker login__<br/>
 *Registry Host: iad.ocir.io*<br/>
 *Username: idu2plmeyir7/junior.palomino@oracle.com*<br/>
 *Password:*<Auth Token>
 ![job_1_docker_login](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_1_docker_login.png)
-Docker build<br/>
+__Docker build__<br/>
 *Registry Host: iad.ocir.io*<br/>
 *Image Name: idu2plmeyir7/go-rest (verificar el nombre completo de la imagen 'iad.ocir.io/idu2plmeyir7/go-rest:v1' en el archivo gorest.yml)*<br/>
 *Version Tag: v1*<br/>
 *Source: Context Root in Workspace*
 ![job_1_docker_build](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_1_docker_build.png)
-Docker push<br/>
+__Docker push__<br/>
 *Registry Host: iad.ocir.io*<br/>
 *Image Name: idu2plmeyir7/go-rest*<br/>
 *Version Tag: v1*
@@ -233,19 +233,27 @@ Git<br/>
 *Branch: Master*
 ![job_2_git](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_2_git.png)
 Steps<br/>
-Add Step - OCIcli, Unix Shell<br/>
-OCIcli<br/>
+Add Step - __OCIcli__, __Unix Shell__<br/>
+__OCIcli__<br/>
 *User OCID: ocid1.user.oc1..aaaaaaaas2ol4ddk6yzmhabecxetak6cnqejwc7whhb7r567iiqxe7nvmpza*<br/>
 *Fingerprint: b6:d5:1d:9f:3e:b8:93:fc:d1:35:09:bf:67:e5:0c:48*<br/>
 *Tenancy: ocid1.tenancy.oc1..aaaaaaaal7ryxbp2hgljainhn3xe67m3jec66exupxajvsjcd36y5sfot7kq*<br/>
 *Private Key:*<value><br/>
 *Region: us-ashburn-1*
 ![job_2_ocicli](https://github.com/obi10/cloud-native/blob/master/images/devcs/job_2_ocicli.png)
-Unix Shell
+__Unix Shell__
 ```sh
 mkdir -p $HOME/.kube
+# Acceder al cluster de Kubernetes a través del 'kubeconfig' (este comando es proporcionado por la consola OCI)
 oci ce cluster create-kubeconfig --cluster-id ocid1.cluster.oc1.iad.aaaaaaaaaezgcmzwgy4wiyrsg5rgczbzhfstqmjsgy3dkytggcywgzbtmvtg --file $HOME/.kube/config --region us-ashburn-1 --token-version 2.0.0
 export KUBECONFIG=$HOME/.kube/config
+
+if kubectl get deployment gorest-se; then
+    kubectl set image deployment/gorest-se gorest-se=iad.ocir.io/idu2plmeyir7/go-rest:$tag --record;
+else
+    # A Kubernetes cluster uses the Secret of docker-registry type to authenticate with a container registry to pull a private image (modificar el comando)
+    kubectl create secret docker-registry <secret-name> --docker-server=<region-code>.ocir.io --docker-username='<tenancy-namespace>/<oci-username>' --docker-password='<oci-auth-token>' --docker-email='<email-address>';
+fi
 
 kubectl apply -f gorest.yml
 sleep 30
@@ -257,7 +265,7 @@ kubectl describe pods
 
 #### 8. Crear un Pipeline
 Builds > Pipeline > + Create Pipeline<br/>
-*Name: GoApplPipeline*
+*Name: __GoApplPipeline__*
 ![create_pipeline](https://github.com/obi10/cloud-native/blob/master/images/devcs/create_pipeline.png)
 Arrastrar los jobs BuildGoRESTAppl y DeployGoRESTAppl build jobs y después conectarlos.
 ![pipeline_drag_drop](https://github.com/obi10/cloud-native/blob/master/images/devcs/pipeline_drag_drop.png)
@@ -276,7 +284,7 @@ Listo!! Usted acaba de crear satisfactoriamente un REST Service en Oracke Kubern
 
 
 #### Posibles errores
-Failed to pull image "iad.ocir.io/idu2plmeyir7/go-rest:latest": rpc error: code = Unknown desc = pull access denied for iad.ocir.io/idu2plmeyir7/go-rest, repository does not exist or may require 'docker login'.
-link: https://github.com/kubernetes/kubernetes/issues/24903
-Tip: en el archivo .yml se recomienda tagear la imagen con una etiqueta diferente a latest.
+Failed to pull image "iad.ocir.io/idu2plmeyir7/go-rest:latest": rpc error: code = Unknown desc = pull access denied for iad.ocir.io/idu2plmeyir7/go-rest, repository does not exist or may require 'docker login'.<br/>
+Link: https://github.com/kubernetes/kubernetes/issues/24903<br/>
+Tip: en el archivo .yml se recomienda tagear la imagen con una etiqueta diferente a latest.<br/>
 ![error_1](https://github.com/obi10/cloud-native/blob/master/images/devcs/error_1.png)

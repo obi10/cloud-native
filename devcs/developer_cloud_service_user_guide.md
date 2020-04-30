@@ -26,7 +26,7 @@ Tip: Se recomienda copiar estos valores en un block de notas (Notepad).
 ![cloud_shell](https://github.com/obi10/cloud-native/blob/master/images/devcs/cloud_shell.png)
 Dentro del Cloud Shell, ejecutar los siguientes comandos para crear las llave pública y privada en formato .pem.
 ```sh
-$ mkdir keys (crear una nueva carpeta en el home)
+$ mkdir keys_aux (crear una nueva carpeta en el home)
 $ cd keys_aux (ir a la nueva carpeta)
 $ openssl genrsa -out private.pem 2048 (creación de la llave privada .pem sin contraseña)
 $ openssl rsa -in private.pem -outform PEM -pubout -out public.pem (obtención de la llave pública .pem)
@@ -40,7 +40,7 @@ Se debe tener en cuentra que la llave creada no tiene contraseña, ya que en la 
 Los siguientes valores son requeridos al configurar el Developer Cloud Service:<br/>
 *__tenancy_ocid__: ocid1.tenancy.oc1..aaaaaaaal7ryxbp2hgljainhn3xe67m3jec66exupxajvsjcd36y5sfot7kq*<br/>
 *__user_ocid__: ocid1.user.oc1..aaaaaaaas2ol4ddk6yzmhabecxetak6cnqejwc7whhb7r567iiqxe7nvmpza*<br/>
-*__private key__: <valor>*<br/>
+*__private key__: `valor`*<br/>
 *__passphrase__:*<br/>
 *__fingerprint__: b6:d5:1d:9f:3e:b8:93:fc:d1:35:09:bf:67:e5:0c:48*<br/>
 *__compartment_ocid__: ocid1.compartment.oc1..aaaaaaaa57ptyitppgnwlp4e3dosnqv3ehqyb3cmbmtkcy6rndtj6qjnpzda*<br/>

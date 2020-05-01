@@ -157,7 +157,7 @@ spec:
     nodePort: 30091
     name: http
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: gorest-se
